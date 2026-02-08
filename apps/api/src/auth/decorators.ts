@@ -1,13 +1,15 @@
-import { SetMetadata } from '@nestjs/common';
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { SetMetadata, createParamDecorator, ExecutionContext } from '@nestjs/common';
 
-// Decorator to mark a route as public (no auth required)
-export const Public = () => SetMetadata('isPublic', true);
+export const IS_PUBLIC_KEY = 'isPublic';
 
-// Decorator to specify required roles for a route
-export const Roles = (...roles: string[]) => SetMetadata('roles', roles);
+/**
+ * Marks a route as public (no authentication required)
+ */
+export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);
 
-// Decorator to get the current user from the request
+/**
+ * Decorator to get the current authenticated user from the request
+ */
 export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();

@@ -1,28 +1,33 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req } from '@nestjs/common';
+import { Request } from 'express';
 import { AuthGuard } from './auth.guard';
 import { RolesGuard } from './roles.guard';
-import { CurrentUser, Roles } from './decorators';
+import { Roles } from './roles.decorator';
+import { CurrentUser } from './decorators';
+
+interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    email?: string;
+    role: string;
+  };
+}
 
 @Controller('auth')
 @UseGuards(AuthGuard, RolesGuard)
 export class AuthController {
   @Get('me')
-  getProfile(@CurrentUser() user: any) {
+  getMe(@Req() req: AuthenticatedRequest) {
     return {
-      user: {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        profile: user.profile,
-      },
+      user: req.user,
     };
   }
 
   @Get('test/member')
   testMember(@CurrentUser() user: any) {
     return {
-      message: 'Member access granted',
-      user: { id: user.id, role: user.role },
+      message: 'This endpoint is accessible to all authenticated users',
+      user,
     };
   }
 
@@ -30,8 +35,8 @@ export class AuthController {
   @Roles('pastor', 'admin', 'super_admin')
   testPastor(@CurrentUser() user: any) {
     return {
-      message: 'Pastor access granted', 
-      user: { id: user.id, role: user.role },
+      message: 'This endpoint is accessible to pastors, admins, and super admins',
+      user,
     };
   }
 
@@ -39,8 +44,8 @@ export class AuthController {
   @Roles('admin', 'super_admin')
   testAdmin(@CurrentUser() user: any) {
     return {
-      message: 'Admin access granted',
-      user: { id: user.id, role: user.role },
+      message: 'This endpoint is accessible to admins and super admins only',
+      user,
     };
   }
 }

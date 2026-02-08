@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+/* 🔒 RESTORATION OS — DESIGN SYSTEM */
+/* Warm & Modern · Sacred · Community-First */
+
+:root {
+  /* Core Palette (Warm & Trustworthy) */
+  --warm-stone: #F7F5F2;
+  --soft-white: #FFFFFF;
+  --warm-amber: #E3A008;
+  --muted-teal: #5F8D89;
+  --charcoal: #2E2E2E;
+  --soft-gray: #6B7280;
+  --light-sand: #E7E5E4;
+  --sacred-black: rgba(0, 0, 0, 0.45);
+  
+  /* Semantic tokens */
+  --background: #F7F5F2;
+  --surface: #FFFFFF;
+  --primary: #E3A008;
+  --accent: #5F8D89;
+  --text-primary: #2E2E2E;
+  --text-secondary: #6B7280;
+  --border: #E7E5E4;
+}
+
+@theme inline {
+  /* Colors */
+  --color-background: var(--warm-stone);
+  --color-surface: var(--soft-white);
+  --color-primary: var(--warm-amber);
+  --color-accent: var(--muted-teal);
+  --color-text-primary: var(--charcoal);
+  --color-text-secondary: var(--soft-gray);
+  --color-border: var(--light-sand);
+  
+  /* Typography */
+  --font-serif: 'Playfair Display', serif;
+  --font-sans: 'Inter', sans-serif;
+  
+  /* Spacing & Sizing */
+  --radius-card: 1rem;
+  --radius-button: 0.875rem;
+  --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.05);
+  --shadow-soft: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+html,
+body {
+  background-color: var(--warm-stone);
+  color: var(--charcoal);
+  font-family: var(--font-sans);
+}
+
+* {
+  border-color: var(--light-sand);
+}
+
+/* Scripture Styling */
+.scripture-text {
+  font-family: var(--font-serif);
+  line-height: 1.8;
+  letter-spacing: 0.01em;
+}
+
+/* Card Style (Core Element) */
+.card {
+  border-radius: 1rem;
+  background: white;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Bottom nav safe area */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}

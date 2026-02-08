@@ -1,9 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
   schemas  = ["auth", "public"]
 }
 
@@ -430,6 +432,22 @@ model profiles {
   created_at DateTime  @default(now()) @db.Timestamptz(6)
   updated_at DateTime  @default(now()) @db.Timestamptz(6)
   users      users     @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  publishedWeeklyScriptures WeeklyScripture[]
+  sundayMessages SundayMessage[]
+  sundayResponses SundayPrepResponse[]
+  communityPosts CommunityPost[]
+  communityReactions CommunityReaction[]
+  communityPrayers CommunityPrayer[]
+  birthdayCelebrant BirthdayCelebrant[]
+  blessingsGiven BirthdayBlessing[] @relation("BlessingFrom")
+  blessingsReceived BirthdayBlessing[] @relation("BlessingTo")
+  prayersGiven BirthdayPrayer[] @relation("PrayerFrom")
+  prayersReceived BirthdayPrayer[] @relation("PrayerFor")
+  createdTrips Trip[]
+  tripInterests TripInterest[]
+  tripSignups TripSignup[]
+  tripQuestions TripQuestion[]
+  tripAnswers TripQuestion[] @relation("TripAnswerer")
 
   @@schema("public")
 }
@@ -502,4 +520,531 @@ enum one_time_token_type {
   phone_change_token
 
   @@schema("auth")
+}
+
+// ============================================================================
+// SMART BIBLE CORE — Phase 4
+// ============================================================================
+
+model BibleBook {
+  id        Int      @id
+  name      String
+  testament String   // old | new
+  chapters  Int
+  verses    BibleVerse[]
+  readingPlanDays ReadingPlanDay[]
+  weeklyScriptures WeeklyScripture[]
+  sundayMessages SundayMessage[]
+
+  @@schema("public")
+}
+
+model BibleVerse {
+  id        Int      @id @default(autoincrement())
+  bookId    Int
+  chapter   Int
+  verse     Int
+  text      String
+
+  book BibleBook @relation(fields: [bookId], references: [id])
+
+  @@index([bookId, chapter])
+  @@schema("public")
+}
+
+model ReadingPlan {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  createdBy   String   @db.Uuid
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  
+  days      ReadingPlanDay[]
+  progress  UserReadingProgress[]
+
+  @@schema("public")
+}
+
+model ReadingPlanDay {
+  id        String @id @default(uuid()) @db.Uuid
+  planId    String @db.Uuid
+  dayIndex  Int
+
+  bookId    Int
+  chapter   Int
+  verseFrom Int?
+  verseTo   Int?
+
+  plan ReadingPlan @relation(fields: [planId], references: [id])
+  book BibleBook   @relation(fields: [bookId], references: [id])
+
+  @@schema("public")
+}
+
+model UserReadingProgress {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  planId      String   @db.Uuid
+  dayIndex    Int
+  completed   Boolean  @default(false)
+  completedAt DateTime? @db.Timestamptz(6)
+
+  plan ReadingPlan @relation(fields: [planId], references: [id])
+
+  @@unique([userId, planId, dayIndex])
+  @@schema("public")
+}
+
+model WeeklyScripture {
+  id          String   @id @default(uuid()) @db.Uuid
+  weekOf      DateTime @db.Date
+  title       String
+  message     String?
+
+  bookId      Int
+  book        BibleBook @relation(fields: [bookId], references: [id])
+  chapter     Int
+  verseFrom   Int?
+  verseTo     Int?
+
+  publishedBy String   @db.Uuid
+  publisher   profiles  @relation(fields: [publishedBy], references: [id])
+  publishedAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@schema("public")
+}
+
+model SundayMessage {
+  id          String   @id @default(uuid()) @db.Uuid
+  weekOf      DateTime @unique @db.Date
+  title       String
+  subtitle    String?
+  summary     String?
+  themeTags   String[] @default([])
+
+  // Optional sermon video teaser (YouTube/Vimeo URL)
+  teaserUrl   String?
+  bannerImage String?
+
+  // Linked scripture reference (reuses BibleBook + verse range)
+  bookId      Int
+  book        BibleBook @relation(fields: [bookId], references: [id])
+  chapter     Int
+  verseFrom   Int?
+  verseTo     Int?
+
+  // Publish control
+  status      String   @default("draft") // draft | published
+  publishedAt DateTime? @db.Timestamptz(6)
+
+  createdBy   String   @db.Uuid
+  creator     profiles @relation(fields: [createdBy], references: [id])
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  prepPrompts SundayPrepPrompt[]
+  responses   SundayPrepResponse[]
+
+  @@schema("public")
+}
+
+model SundayPrepPrompt {
+  id        String @id @default(uuid()) @db.Uuid
+  messageId String @db.Uuid
+  order     Int
+
+  type      String // reflection | prayer | action
+  text      String
+
+  message SundayMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  @@index([messageId])
+  @@schema("public")
+}
+
+model SundayPrepResponse {
+  id        String   @id @default(uuid()) @db.Uuid
+  messageId String   @db.Uuid
+  userId    String   @db.Uuid
+
+  promptId  String?  @db.Uuid
+  response  String?   // optional journaling
+  prayed    Boolean   @default(false) // quick tap option
+  createdAt DateTime  @default(now()) @db.Timestamptz(6)
+
+  message   SundayMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user      profiles @relation(fields: [userId], references: [id])
+
+  @@index([messageId, userId])
+  @@schema("public")
+}
+
+model CommunityPost {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  type      String   // prayer | praise | update
+  title     String?
+  content   String
+
+  isPublic  Boolean  @default(false) // public to members only
+  isPinned  Boolean  @default(false)
+  isHidden  Boolean  @default(false)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+
+  author    profiles @relation(fields: [userId], references: [id])
+  reactions CommunityReaction[]
+  prayers   CommunityPrayer[]
+
+  @@index([type, createdAt])
+  @@schema("public")
+}
+
+model CommunityReaction {
+  id        String   @id @default(uuid()) @db.Uuid
+  postId    String   @db.Uuid
+  userId    String   @db.Uuid
+  emoji     String   // 🙏 ❤️ 🙌
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      profiles @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId, emoji])
+  @@schema("public")
+}
+
+model CommunityPrayer {
+  id        String   @id @default(uuid()) @db.Uuid
+  postId    String   @db.Uuid
+  userId    String   @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      profiles @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId])
+  @@schema("public")
+}
+
+model BirthdayEvent {
+  id        String   @id @default(uuid()) @db.Uuid
+  date      DateTime @db.Date
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  celebrants BirthdayCelebrant[]
+  blessings  BirthdayBlessing[]
+  prayers    BirthdayPrayer[]
+
+  @@unique([date])
+  @@schema("public")
+}
+
+model BirthdayCelebrant {
+  id        String   @id @default(uuid()) @db.Uuid
+  eventId   String   @db.Uuid
+  userId    String   @db.Uuid
+
+  event     BirthdayEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      profiles @relation(fields: [userId], references: [id])
+
+  @@unique([eventId, userId])
+  @@schema("public")
+}
+
+model BirthdayBlessing {
+  id        String   @id @default(uuid()) @db.Uuid
+  eventId   String   @db.Uuid
+  fromUser  String   @db.Uuid
+  toUser    String   @db.Uuid
+
+  message   String?
+  verse     String?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  event     BirthdayEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  from      profiles @relation("BlessingFrom", fields: [fromUser], references: [id])
+  to        profiles @relation("BlessingTo", fields: [toUser], references: [id])
+
+  @@index([eventId, toUser])
+  @@schema("public")
+}
+
+model BirthdayPrayer {
+  id        String   @id @default(uuid()) @db.Uuid
+  eventId   String   @db.Uuid
+  userId    String   @db.Uuid
+  prayedFor String   @db.Uuid
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  event     BirthdayEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      profiles @relation("PrayerFrom", fields: [userId], references: [id])
+  celebrant profiles @relation("PrayerFor", fields: [prayedFor], references: [id])
+
+  @@unique([eventId, userId, prayedFor])
+  @@schema("public")
+}
+
+model Trip {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  type        String   // cruise | retreat | mission | rv | local | international
+
+  status      String   @default("interest") // interest | planning | open | closed | completed
+  startDate   DateTime? @db.Timestamptz(6)
+  endDate     DateTime? @db.Timestamptz(6)
+
+  location    String?
+  priceMin    Int?
+  priceMax    Int?
+  capacity    Int?
+
+  bannerImage String?
+  createdBy   String   @db.Uuid
+
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @default(now()) @db.Timestamptz(6)
+
+  creator     profiles @relation(fields: [createdBy], references: [id])
+  interests   TripInterest[]
+  signups     TripSignup[]
+  questions   TripQuestion[]
+
+  @@schema("public")
+}
+
+model TripInterest {
+  id        String   @id @default(uuid()) @db.Uuid
+  tripId    String   @db.Uuid
+  userId    String   @db.Uuid
+  level     String   @default("interested") // interested | maybe | not_sure
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  trip      Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user      profiles @relation(fields: [userId], references: [id])
+
+  @@unique([tripId, userId])
+  @@index([tripId])
+  @@schema("public")
+}
+
+model TripSignup {
+  id        String   @id @default(uuid()) @db.Uuid
+  tripId    String   @db.Uuid
+  userId    String   @db.Uuid
+  status    String   @default("pending") // pending | confirmed | cancelled
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  trip      Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user      profiles @relation(fields: [userId], references: [id])
+
+  @@unique([tripId, userId])
+  @@index([tripId])
+  @@schema("public")
+}
+
+model TripQuestion {
+  id        String   @id @default(uuid()) @db.Uuid
+  tripId    String   @db.Uuid
+  userId    String   @db.Uuid
+  question  String
+  answer    String?
+  answeredBy String?  @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  answeredAt DateTime? @db.Timestamptz(6)
+
+  trip      Trip @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user      profiles @relation(fields: [userId], references: [id])
+  answerer  profiles? @relation("TripAnswerer", fields: [answeredBy], references: [id])
+
+  @@index([tripId])
+  @@schema("public")
+}
+
+model BibleNote {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+
+  // Verse reference
+  bookId    Int
+  chapter   Int
+  verseFrom Int?
+  verseTo   Int?
+
+  title     String?
+  content   String
+
+  tags      String[] @default([])
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, bookId, chapter])
+  @@schema("public")
+}
+
+model BibleHighlight {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+
+  bookId    Int
+  chapter   Int
+  verseFrom Int?
+  verseTo   Int?
+
+  label     String? // future: color/category
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, bookId, chapter])
+  @@unique([userId, bookId, chapter, verseFrom, verseTo])
+  @@schema("public")
+}
+
+enum NotificationCategory {
+  SUNDAY_PREP
+  BIBLE_DEVOTION
+  PRAYER_PRAISE
+  BIRTHDAY
+  GROUP
+  TRIP
+  ADMIN
+
+  @@schema("public")
+}
+
+enum NotificationPriority {
+  P0_CRITICAL
+  P1_HIGH
+  P2_NORMAL
+  P3_LOW
+
+  @@schema("public")
+}
+
+enum NotificationChannel {
+  IN_APP
+  PUSH
+  EMAIL
+
+  @@schema("public")
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  DELIVERED
+  READ
+  DISMISSED
+  FAILED
+
+  @@schema("public")
+}
+
+model Notification {
+  id          String               @id @default(uuid()) @db.Uuid
+  userId      String               @db.Uuid
+  category    NotificationCategory
+  priority    NotificationPriority @default(P2_NORMAL)
+  channel     NotificationChannel  @default(IN_APP)
+  status      NotificationStatus   @default(PENDING)
+  title       String
+  body        String
+  deepLink    String?
+  imageUrl    String?
+  dedupeKey   String?
+  sentAt      DateTime?            @db.Timestamptz(6)
+  readAt      DateTime?            @db.Timestamptz(6)
+  dismissedAt DateTime?            @db.Timestamptz(6)
+  expiresAt   DateTime?            @db.Timestamptz(6)
+  data        Json?
+  createdAt   DateTime             @default(now()) @db.Timestamptz(6)
+
+  @@index([userId, status])
+  @@index([userId, createdAt])
+  @@index([dedupeKey])
+  @@schema("public")
+}
+
+model UserNotificationPreferences {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @unique @db.Uuid
+
+  // Category toggles
+  sundayPrepEnabled    Boolean @default(true)
+  bibleDevotionEnabled Boolean @default(true)
+  prayerPraiseEnabled  Boolean @default(true)
+  birthdayEnabled      Boolean @default(true)
+  groupEnabled         Boolean @default(true)
+  tripEnabled          Boolean @default(true)
+  adminEnabled         Boolean @default(true)
+
+  // Channel preferences
+  pushEnabled  Boolean @default(true)
+  emailEnabled Boolean @default(false)
+
+  // Quiet hours (0-23 hour values)
+  quietHoursEnabled Boolean @default(true)
+  quietHoursStart   Int     @default(22)
+  quietHoursEnd     Int     @default(7)
+
+  // Digest
+  digestEnabled   Boolean @default(false)
+  digestFrequency String  @default("daily")
+  digestTime      Int     @default(8)
+
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@schema("public")
+}
+
+model PushSubscription {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @db.Uuid
+  endpoint   String    @unique
+  p256dh     String
+  auth       String
+  userAgent  String?
+  createdAt  DateTime  @default(now()) @db.Timestamptz(6)
+  lastUsedAt DateTime? @db.Timestamptz(6)
+
+  @@index([userId])
+  @@schema("public")
+}
+
+model JobRun {
+  id        String   @id @default(uuid()) @db.Uuid
+  job       String
+  ranAt     DateTime @default(now()) @db.Timestamptz(6)
+  status    String   // success | error
+  message   String?
+
+  @@schema("public")
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(uuid()) @db.Uuid
+  type      String   // pray, read, birthday_wish, trip_signup
+  entityId  String?  @db.Uuid
+  userId    String?  @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([type, createdAt])
+  @@schema("public")
+}
+
+model AnalyticsDaily {
+  id        String   @id @default(uuid()) @db.Uuid
+  date      DateTime @db.Date
+  metric    String   // prayers, reads, wishes, signups
+  count     Int      @default(0)
+
+  @@unique([date, metric], name: "date_metric")
+  @@schema("public")
 }
