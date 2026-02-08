@@ -42,21 +42,22 @@ function Navigation() {
   ];
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${
-        scrolled
-          ? "bg-white/10 backdrop-blur-2xl shadow-2xl shadow-black/10 border-b border-white/20"
-          : "bg-white/5 backdrop-blur-sm border-b border-white/10"
-      }`}
-      style={{
-        background: scrolled
-          ? 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 50%, rgba(56,189,248,0.08) 100%)'
-          : 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 50%, rgba(56,189,248,0.05) 100%)',
-        boxShadow: scrolled
-          ? '0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2)'
-          : '0 4px 16px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.1)',
-      }}
-    >
+    <>
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${
+          scrolled
+            ? "bg-white/10 backdrop-blur-2xl shadow-2xl shadow-black/10 border-b border-white/20"
+            : "bg-white/5 backdrop-blur-sm border-b border-white/10"
+        }`}
+        style={{
+          background: scrolled
+            ? 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 50%, rgba(56,189,248,0.08) 100%)'
+            : 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 50%, rgba(56,189,248,0.05) 100%)',
+          boxShadow: scrolled
+            ? '0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2)'
+            : '0 4px 16px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.1)',
+        }}
+      >
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <Link
           href="/"
@@ -135,12 +136,12 @@ function Navigation() {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden text-stone-700 hover:text-stone-900 transition-colors z-50 p-2 rounded-lg"
+          className="lg:hidden text-stone-900 hover:text-teal-600 transition-colors relative z-[110] p-2 rounded-lg"
           aria-label="Toggle mobile menu"
           style={{
-            background: 'rgba(255,255,255,0.1)',
+            background: 'rgba(255,255,255,0.9)',
             backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255,255,255,0.2)',
+            border: '1px solid rgba(0,0,0,0.1)',
           }}
         >
           <svg
@@ -170,43 +171,39 @@ function Navigation() {
           </svg>
         </button>
       </div>
+    </header>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu - Outside header for proper z-index */}
       <div
-        className={`lg:hidden fixed inset-0 transition-all duration-700 ${
+        className={`lg:hidden fixed inset-0 z-[100] transition-all duration-700 ${
           mobileMenuOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
         style={{
-          top: "64px",
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 50%, rgba(56,189,248,0.05) 100%)',
+          top: "56px",
+          background: 'rgba(255,255,255,0.98)',
           backdropFilter: 'blur(20px)',
-          borderTop: '1px solid rgba(255,255,255,0.3)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2)',
+          borderTop: '1px solid rgba(0,0,0,0.1)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
         }}
       >
-        <nav className="flex flex-col items-center justify-start pt-8 h-full gap-4 sm:gap-6 text-lg sm:text-xl overflow-y-auto">
+        <nav className="flex flex-col items-center justify-start pt-6 pb-6 h-full gap-3 text-base overflow-y-auto">
           {navLinks.map((link, index) => (
             <Link
               key={link.href}
               href={link.href}
               onClick={() => setMobileMenuOpen(false)}
-              className={`px-6 py-3 rounded-xl transition-all duration-500 hover:scale-105 ${
+              className={`px-6 py-2.5 rounded-xl transition-all duration-300 w-[90%] text-center font-medium ${
                 pathname === link.href
-                  ? "text-teal-600 font-semibold scale-110"
-                  : "text-stone-700 hover:text-teal-600"
+                  ? "text-white bg-teal-600"
+                  : "text-stone-900 hover:text-teal-600 hover:bg-stone-50"
               }`}
               style={{
                 animation: mobileMenuOpen
                   ? `fadeInUp 0.4s ease-out ${index * 0.08}s both`
                   : "none",
-                background: pathname === link.href
-                  ? 'linear-gradient(135deg, rgba(56,189,248,0.1) 0%, rgba(56,189,248,0.05) 100%)'
-                  : 'rgba(255,255,255,0.1)',
-                backdropFilter: 'blur(10px)',
-                border: pathname === link.href ? '1px solid rgba(56,189,248,0.2)' : '1px solid rgba(255,255,255,0.2)',
-                boxShadow: pathname === link.href ? '0 4px 12px rgba(56,189,248,0.15)' : '0 2px 8px rgba(0,0,0,0.05)',
+                boxShadow: pathname === link.href ? '0 2px 8px rgba(20,184,166,0.3)' : 'none',
               }}
             >
               {link.label}
@@ -215,20 +212,16 @@ function Navigation() {
           <Link
             href="/app"
             onClick={() => setMobileMenuOpen(false)}
-            className="px-8 py-3 rounded-xl font-medium transition-all duration-500 hover:scale-105 relative overflow-hidden group"
+            className="px-8 py-3 rounded-xl font-bold transition-all duration-300 bg-amber-500 hover:bg-amber-600 text-white w-[90%] text-center shadow-lg"
             style={{
-              animation: mobileMenuOpen ? "fadeInUp 0.4s ease-out 0.4s both" : "none",
-              background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #f59e0b 100%)',
-              boxShadow: '0 4px 16px rgba(245,158,11,0.3), inset 0 1px 0 rgba(255,255,255,0.2)',
-              border: '1px solid rgba(255,255,255,0.1)',
+              animation: mobileMenuOpen ? "fadeInUp 0.4s ease-out 0.5s both" : "none",
             }}
           >
-            <span className="relative z-10 text-white">Become Member</span>
-            <div className="absolute inset-0 bg-linear-to-r from-white/0 via-white/10 to-white/0 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+            Become Member
           </Link>
         </nav>
       </div>
-    </header>
+    </>
   );
 }
 
