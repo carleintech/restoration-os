@@ -57,7 +57,7 @@ function Navigation() {
           : '0 4px 16px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.1)',
       }}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <Link
           href="/"
           className="flex items-center gap-3 group relative z-50"
@@ -66,28 +66,29 @@ function Navigation() {
             <Image
               src="/hero/logo.png"
               alt="Restoration Church"
-              width={50}
-              height={50}
-              className="transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 drop-shadow-lg"
+              width={40}
+              height={40}
+              className="w-8 h-8 sm:w-10 sm:h-10 md:w-[50px] md:h-[50px] transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 drop-shadow-lg"
               style={{
                 filter: scrolled ? 'drop-shadow(0 2px 8px rgba(0,0,0,0.1))' : 'drop-shadow(0 4px 12px rgba(0,0,0,0.15))',
               }}
             />
           </div>
           <span
-            className={`text-xl font-semibold transition-all duration-700 ${
+            className={`text-sm sm:text-base md:text-lg lg:text-xl font-semibold transition-all duration-700 ${
               scrolled ? "text-stone-900" : "text-stone-800"
             } group-hover:text-teal-600`}
             style={{
               textShadow: scrolled ? '0 1px 2px rgba(0,0,0,0.1)' : '0 2px 4px rgba(0,0,0,0.2)',
             }}
           >
-            Restoration Church
+            <span className="hidden sm:inline">Restoration Church</span>
+            <span className="sm:hidden">Restoration</span>
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex gap-8 items-center text-base">
+        <nav className="hidden lg:flex gap-6 xl:gap-8 items-center text-sm xl:text-base">
           {navLinks.map((link, index) => (
             <Link
               key={link.href}
@@ -134,7 +135,7 @@ function Navigation() {
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden text-stone-700 hover:text-stone-900 transition-colors z-50 p-2 rounded-lg"
+          className="lg:hidden text-stone-700 hover:text-stone-900 transition-colors z-50 p-2 rounded-lg"
           aria-label="Toggle mobile menu"
           style={{
             background: 'rgba(255,255,255,0.1)',
@@ -172,20 +173,20 @@ function Navigation() {
 
       {/* Mobile Menu */}
       <div
-        className={`md:hidden fixed inset-0 transition-all duration-700 ${
+        className={`lg:hidden fixed inset-0 transition-all duration-700 ${
           mobileMenuOpen
             ? "opacity-100 pointer-events-auto"
             : "opacity-0 pointer-events-none"
         }`}
         style={{
-          top: "80px",
+          top: "64px",
           background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 50%, rgba(56,189,248,0.05) 100%)',
           backdropFilter: 'blur(20px)',
           borderTop: '1px solid rgba(255,255,255,0.3)',
           boxShadow: '0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.2)',
         }}
       >
-        <nav className="flex flex-col items-center justify-center h-full gap-8 text-xl">
+        <nav className="flex flex-col items-center justify-start pt-8 h-full gap-4 sm:gap-6 text-lg sm:text-xl overflow-y-auto">
           {navLinks.map((link, index) => (
             <Link
               key={link.href}
@@ -238,6 +239,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -246,8 +250,8 @@ export default function RootLayout({
         <main>{children}</main>
 
         <footer className="bg-stone-900 text-white">
-          <div className="mx-auto max-w-6xl px-6 py-8">
-            <div className="text-center text-sm text-stone-400">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+            <div className="text-center text-xs sm:text-sm text-stone-400">
               © {new Date().getFullYear()} Restoration Church · Landstown
             </div>
           </div>

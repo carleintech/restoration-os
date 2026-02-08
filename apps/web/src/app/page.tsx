@@ -81,24 +81,24 @@ export default function Home() {
 
       {/* STATS SECTION */}
       <Section spacing="md" background="white">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {stats.map((stat, index) => (
             <div
               key={stat.label}
-              className="group relative overflow-hidden rounded-3xl bg-linear-to-br from-teal-50 to-blue-50 p-8 text-center border-2 border-teal-100 hover:border-teal-300 hover:shadow-2xl transition-all duration-500 hover:scale-105"
+              className="group relative overflow-hidden rounded-2xl sm:rounded-3xl bg-linear-to-br from-teal-50 to-blue-50 p-4 sm:p-6 md:p-8 text-center border-2 border-teal-100 hover:border-teal-300 hover:shadow-2xl transition-all duration-500 hover:scale-105"
               // eslint-disable-next-line react/forbid-dom-props
               style={{ animation: `fadeInUp 0.5s ease-out ${index * 0.1}s both` }}
             >
-              <div className="absolute top-0 right-0 w-24 h-24 bg-teal-200/30 rounded-full -translate-y-12 translate-x-12"></div>
+              <div className="absolute top-0 right-0 w-16 h-16 sm:w-24 sm:h-24 bg-teal-200/30 rounded-full -translate-y-8 sm:-translate-y-12 translate-x-8 sm:translate-x-12"></div>
               
               <div className="relative z-10">
-                <div className="text-5xl mb-4 group-hover:scale-125 group-hover:rotate-12 transition-transform duration-300">
+                <div className="text-3xl sm:text-4xl md:text-5xl mb-2 sm:mb-4 group-hover:scale-125 group-hover:rotate-12 transition-transform duration-300">
                   {stat.icon}
                 </div>
-                <div className="text-5xl font-bold font-serif text-teal-600 mb-2">
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold font-serif text-teal-600 mb-1 sm:mb-2">
                   {stat.number}
                 </div>
-                <div className="text-sm font-semibold text-stone-700 uppercase tracking-wider">
+                <div className="text-xs sm:text-sm font-semibold text-stone-700 uppercase tracking-wider">
                   {stat.label}
                 </div>
               </div>
@@ -109,22 +109,22 @@ export default function Home() {
 
       {/* VALUES */}
       <Section spacing="lg" background="stone">
-        <div className="max-w-4xl mx-auto text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-teal-100 rounded-full text-teal-700 font-semibold mb-6">
+        <div className="max-w-4xl mx-auto text-center mb-12 sm:mb-16">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-teal-100 rounded-full text-teal-700 text-sm sm:text-base font-semibold mb-4 sm:mb-6">
             <span>💡</span>
             <span>Our Values</span>
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-stone-900 mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-stone-900 mb-4 sm:mb-6 px-4">
             What We Believe
           </h2>
           
-          <p className="text-xl text-stone-600 leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-stone-600 leading-relaxed px-4">
             Restoration Church exists to love God, love people, and serve our community with excellence and authenticity.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {[
             {
               title: "Love",
@@ -159,14 +159,14 @@ export default function Home() {
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
 
               {/* Content */}
-              <div className="relative z-10 p-8 text-white h-full flex flex-col">
-                <div className="text-6xl mb-6 group-hover:scale-125 group-hover:rotate-12 transition-transform duration-300">
+              <div className="relative z-10 p-6 sm:p-8 text-white h-full flex flex-col">
+                <div className="text-4xl sm:text-5xl md:text-6xl mb-4 sm:mb-6 group-hover:scale-125 group-hover:rotate-12 transition-transform duration-300">
                   {value.icon}
                 </div>
 
-                <h3 className="text-2xl font-serif font-bold mb-4">{value.title}</h3>
+                <h3 className="text-xl sm:text-2xl font-serif font-bold mb-3 sm:mb-4">{value.title}</h3>
 
-                <p className="text-white/90 leading-relaxed flex-1">
+                <p className="text-sm sm:text-base text-white/90 leading-relaxed flex-1">
                   {value.text}
                 </p>
               </div>
@@ -187,27 +187,27 @@ export default function Home() {
           {upcomingEvents.map((event, index) => (
             <div
               key={event.title}
-              className="group bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105"
+              className="group bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 hover:scale-105"
               // eslint-disable-next-line react/forbid-dom-props
               style={{ animation: `fadeInUp 0.5s ease-out ${index * 0.1}s both` }}
             >
               {/* Category Badge */}
-              <div className="relative p-6 pb-0">
-                <div className="inline-block px-3 py-1 bg-teal-100 text-teal-700 text-xs font-semibold rounded-full mb-4">
+              <div className="relative p-4 sm:p-6 pb-0">
+                <div className="inline-block px-2.5 sm:px-3 py-0.5 sm:py-1 bg-teal-100 text-teal-700 text-xs font-semibold rounded-full mb-3 sm:mb-4">
                   {event.category}
                 </div>
               </div>
 
               {/* Content */}
-              <div className="px-6 pb-6">
-                <h3 className="text-2xl font-serif font-bold text-stone-900 mb-3 group-hover:text-teal-600 transition-colors">
+              <div className="px-4 sm:px-6 pb-4 sm:pb-6">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-serif font-bold text-stone-900 mb-2 sm:mb-3 group-hover:text-teal-600 transition-colors">
                   {event.title}
                 </h3>
 
-                <div className="space-y-2 mb-4">
+                <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
                   <div className="flex items-center gap-2 text-stone-600">
-                    <span className="text-xl">📅</span>
-                    <span className="text-sm font-medium">
+                    <span className="text-base sm:text-xl">📅</span>
+                    <span className="text-xs sm:text-sm font-medium">
                       {new Date(event.date).toLocaleDateString('en-US', { 
                         weekday: 'long',
                         month: 'long', 
@@ -216,22 +216,22 @@ export default function Home() {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-stone-600">
-                    <span className="text-xl">⏰</span>
-                    <span className="text-sm font-medium">{event.time}</span>
+                    <span className="text-base sm:text-xl">⏰</span>
+                    <span className="text-xs sm:text-sm font-medium">{event.time}</span>
                   </div>
                   <div className="flex items-center gap-2 text-stone-600">
-                    <span className="text-xl">📍</span>
-                    <span className="text-sm font-medium">{event.location}</span>
+                    <span className="text-base sm:text-xl">📍</span>
+                    <span className="text-xs sm:text-sm font-medium">{event.location}</span>
                   </div>
                 </div>
 
-                <p className="text-stone-600 mb-6">
+                <p className="text-sm sm:text-base text-stone-600 mb-4 sm:mb-6">
                   {event.description}
                 </p>
 
                 <Link
                   href="/events"
-                  className="w-full block py-3 bg-teal-600 text-white text-center rounded-xl font-bold hover:bg-teal-700 transition-all hover:scale-105"
+                  className="w-full block py-2.5 sm:py-3 bg-teal-600 text-white text-center rounded-xl font-bold text-sm sm:text-base hover:bg-teal-700 transition-all hover:scale-105"
                 >
                   Learn More
                 </Link>
@@ -243,7 +243,7 @@ export default function Home() {
         <div className="text-center">
           <Link
             href="/events"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-teal-600 text-white rounded-xl font-bold text-lg hover:bg-teal-700 transition-all hover:scale-105 shadow-xl"
+            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-teal-600 text-white rounded-xl font-bold text-base sm:text-lg hover:bg-teal-700 transition-all hover:scale-105 shadow-xl"
           >
             <span>📅</span>
             <span>View All Events</span>

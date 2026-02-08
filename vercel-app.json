@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "buildCommand": "pnpm turbo build --filter=app",
+  "installCommand": "pnpm install",
+  "devCommand": "cd apps/app && pnpm dev",
+  "framework": "nextjs",
+  "outputDirectory": "apps/app/.next"
+}

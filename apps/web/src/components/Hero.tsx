@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function Hero() {
   return (
-    <section className="relative h-screen min-h-[600px] w-full overflow-hidden">
+    <section className="relative min-h-[100svh] md:h-screen w-full overflow-hidden">
       {/* Background image with parallax effect */}
       <div className="absolute inset-0">
         <Image
@@ -13,7 +13,7 @@ export default function Hero() {
           alt="Restoration Church building"
           fill
           priority
-          className="object-cover scale-105"
+          className="object-cover object-center scale-105"
         />
       </div>
 
@@ -26,34 +26,34 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 h-full flex items-center">
-        <div className="mx-auto max-w-6xl px-6 w-full">
-          <div className="max-w-3xl space-y-8 text-white">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 w-full py-20 md:py-0">
+          <div className="max-w-3xl space-y-6 md:space-y-8 text-white">
             {/* Badge */}
             <div
-              className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
+              className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
               // eslint-disable-next-line react/forbid-dom-props
               style={{ animation: "fadeInUp 0.5s ease-out both" }}
             >
-              <span className="text-2xl">⛪</span>
-              <span className="font-semibold text-white/90">Welcome to Restoration Church</span>
+              <span className="text-xl sm:text-2xl">⛪</span>
+              <span className="text-sm sm:text-base font-semibold text-white/90">Welcome to Restoration Church</span>
             </div>
 
             {/* Heading */}
             <h1
-              className="text-5xl md:text-7xl font-serif font-bold leading-tight"
+              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold leading-tight"
               // eslint-disable-next-line react/forbid-dom-props
               style={{
                 animation: "fadeInUp 0.5s ease-out 0.1s both",
                 textShadow: "0 4px 12px rgba(0,0,0,0.3)",
               }}
             >
-              A Place to Belong.<br />
-              A Place to Grow.
+              A Place to Belong.<br className="hidden sm:block" />
+              <span className="sm:hidden"> </span>A Place to Grow.
             </h1>
 
             {/* Subheading */}
             <p
-              className="text-xl md:text-2xl text-white/90 leading-relaxed max-w-2xl"
+              className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 leading-relaxed max-w-2xl"
               // eslint-disable-next-line react/forbid-dom-props
               style={{
                 animation: "fadeInUp 0.5s ease-out 0.2s both",
@@ -65,13 +65,13 @@ export default function Hero() {
 
             {/* CTA Buttons */}
             <div
-              className="flex flex-wrap gap-4 pt-4"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4"
               // eslint-disable-next-line react/forbid-dom-props
               style={{ animation: "fadeInUp 0.5s ease-out 0.3s both" }}
             >
               <Link
                 href="/visit"
-                className="group relative overflow-hidden px-8 py-4 rounded-xl font-bold text-lg transition-all hover:scale-105 shadow-2xl"
+                className="group relative overflow-hidden px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg transition-all hover:scale-105 shadow-2xl text-center"
                 // eslint-disable-next-line react/forbid-dom-props
                 style={{
                   background: 'linear-gradient(135deg, #0891b2 0%, #0e7490 50%, #0891b2 100%)',
@@ -84,7 +84,7 @@ export default function Hero() {
 
               <Link
                 href="/watch"
-                className="group relative overflow-hidden px-8 py-4 rounded-xl font-bold text-lg transition-all hover:scale-105 shadow-2xl backdrop-blur-md border-2 border-white/30"
+                className="group relative overflow-hidden px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg transition-all hover:scale-105 shadow-2xl backdrop-blur-md border-2 border-white/30 text-center"
                 // eslint-disable-next-line react/forbid-dom-props
                 style={{
                   background: 'rgba(255,255,255,0.1)',

@@ -55,7 +55,7 @@ export function Section({
         className
       )}
     >
-      <div className={widthClasses[width]}>{children}</div>
+      <div className={cn(widthClasses[width], "mx-auto px-4 sm:px-6 lg:px-8")}>{children}</div>
     </section>
   );
 }

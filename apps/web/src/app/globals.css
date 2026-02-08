@@ -50,12 +50,12 @@
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.75;
 
-  /* Spacing Scale */
-  --spacing-xs: 3rem;    /* 48px */
-  --spacing-sm: 4rem;    /* 64px */
-  --spacing-md: 5rem;    /* 80px */
-  --spacing-lg: 6rem;    /* 96px */
-  --spacing-xl: 8rem;    /* 128px */
+  /* Spacing Scale - Mobile First */
+  --spacing-xs: 2rem;     /* 32px mobile */
+  --spacing-sm: 3rem;     /* 48px mobile */
+  --spacing-md: 4rem;     /* 64px mobile */
+  --spacing-lg: 5rem;     /* 80px mobile */
+  --spacing-xl: 6rem;     /* 96px mobile */
 
   /* Container Widths */
   --container-narrow: 48rem;   /* 768px */
@@ -336,64 +336,84 @@ html, body {
 }
 
 /* ============================================
-   SECTION UTILITIES
+   SECTION UTILITIES - RESPONSIVE
    ============================================ */
 
 .section-spacing-xs {
-  padding-top: var(--spacing-xs);
-  padding-bottom: var(--spacing-xs);
+  padding-top: 2rem;      /* 32px mobile */
+  padding-bottom: 2rem;
 }
 
 .section-spacing-sm {
-  padding-top: var(--spacing-sm);
-  padding-bottom: var(--spacing-sm);
+  padding-top: 3rem;      /* 48px mobile */
+  padding-bottom: 3rem;
 }
 
 .section-spacing-md {
-  padding-top: var(--spacing-md);
-  padding-bottom: var(--spacing-md);
+  padding-top: 4rem;      /* 64px mobile */
+  padding-bottom: 4rem;
 }
 
 .section-spacing-lg {
-  padding-top: var(--spacing-lg);
-  padding-bottom: var(--spacing-lg);
+  padding-top: 5rem;      /* 80px mobile */
+  padding-bottom: 5rem;
 }
 
 .section-spacing-xl {
-  padding-top: var(--spacing-xl);
-  padding-bottom: var(--spacing-xl);
+  padding-top: 6rem;      /* 96px mobile */
+  padding-bottom: 6rem;
+}
+
+/* Tablet and larger */
+@media (min-width: 768px) {
+  .section-spacing-xs {
+    padding-top: 3rem;    /* 48px tablet */
+    padding-bottom: 3rem;
+  }
+
+  .section-spacing-sm {
+    padding-top: 4rem;    /* 64px tablet */
+    padding-bottom: 4rem;
+  }
+
+  .section-spacing-md {
+    padding-top: 5rem;    /* 80px tablet */
+    padding-bottom: 5rem;
+  }
+
+  .section-spacing-lg {
+    padding-top: 6rem;    /* 96px tablet */
+    padding-bottom: 6rem;
+  }
+
+  .section-spacing-xl {
+    padding-top: 8rem;    /* 128px tablet */
+    padding-bottom: 8rem;
+  }
+}
+
+.container-narrow,
+.container-default,
+.container-wide,
+.container-full {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .container-narrow {
   max-width: var(--container-narrow);
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
 }
 
 .container-default {
   max-width: var(--container-default);
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
 }
 
 .container-wide {
   max-width: var(--container-wide);
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
 }
 
 .container-full {
   max-width: var(--container-full);
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
 }
 
 /* ============================================
